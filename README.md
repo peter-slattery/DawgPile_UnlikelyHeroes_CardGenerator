@@ -1,9 +1,13 @@
 # DawgPile_UnlikelyHeroes_CardGenerator
 
-## Ideas
-- a csv view
-- a card view
-- multiple open files
+## To Run The Visual Editor 
+You need to run both the editor and the server at the same time because the js ecosystem is insane.
+In two separate terminals:
+```bash
+npm run server
+# and
+npm run editor
+```
 
 ## TODO
 x create a basic react app
