@@ -5,11 +5,25 @@
   "main": "gen.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gen": "node gen.js"
+    "gen": "node gen.js",
+    "editor": "vite serve src/editor",
+    "server": "ts-node src/server/main.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "csv": "^6.3.1"
+    "@types/node": "^20.4.5",
+    "@vitejs/plugin-react": "^4.0.3",
+    "csv": "^6.3.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-jss": "^10.10.0",
+    "ts-node": "^10.9.1",
+    "vite": "^4.4.7",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.17",
+    "@types/ws": "^8.5.5"
   }
 }
