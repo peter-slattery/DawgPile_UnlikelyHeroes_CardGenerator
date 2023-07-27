@@ -1,24 +1,21 @@
 import React from "react"
-import { SpreadsheetEditor } from "./SpreadsheetEditor"
-import { CsvPicker } from "./CsvPicker"
 import { createContext } from "./createContext"
 
-const TEST_DATA = [
-  { a: "foo", b: "hi there", c: "well then" },
-  { a: "foo", b: "hi there", c: "well then" },
-  { a: "foo", b: "hi there", c: "well then" },
-  { a: "foo", b: "hi there", c: "well then" },
-  { a: "foo", b: "hi there", d: "well then" },
-]
+import { TabCsvPicker } from "./TabCsvPicker"
+import { TabEditor } from "./TabEditor"
+import { TabView } from "./TabView"
 
 type AppContextProps = {
   ws: WebSocket,
+  focusedCsv: string,
+  focusedCsvSet: (csv: string) => void,
 }
 export const AppContext = createContext<AppContextProps>()
 
 export const App: React.FC = () => {
   const [ ws, wsSet ] = React.useState<WebSocket | null>(null)
-  const [ data, dataSet ] = React.useState(TEST_DATA)
+  const [ focusedCsv, focusedCsvSet ] = React.useState<string>("")
+  const [ activeTabIndex, activeTabIndexSet ] = React.useState<number>(0)
 
   const webSocketInit = () => {
     const socket = new WebSocket("ws://localhost:8080");
@@ -31,18 +28,28 @@ export const App: React.FC = () => {
     webSocketInit()
   }, [])
 
-  const updateTableData = (newData: object[]) => {
-    dataSet(newData as any)
-  }
-
-  // TODO: Loading 
+  // TODO: Loading?
   if (!ws) return null
 
+  const ctx: AppContextProps = {
+    ws,
+    focusedCsv, 
+    focusedCsvSet: (csv: string) => {
+      focusedCsvSet(csv),
+      activeTabIndexSet(1)
+    }
+  }
+
   return (
-    <AppContext.Provider value={{ ws }}>
-      <div>
-        <CsvPicker />
-      </div>
+    <AppContext.Provider value={ctx}>
+      <TabView
+        activeTabIndex={activeTabIndex}
+        activeTabIndexSet={activeTabIndexSet}
+        tabs={[
+          { title: "CSVs", component: TabCsvPicker },
+          { title: "Editor", component: TabEditor }
+        ]}
+      />
     </AppContext.Provider>
   )
 }

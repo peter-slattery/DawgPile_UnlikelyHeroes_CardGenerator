@@ -1,24 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import { createUseStyles } from "react-jss"
 
-const useStyles = createUseStyles({
-  table: {
-    borderSpacing: "0px",
-    borderLeft: "1px solid black",
-    borderTop: "1px solid black",
-    width: "100%",
-    height: "100%",
-    "& td,th": {
-      borderRight: "1px solid black",
-      borderBottom: "1px solid black",
-    },
-    "& input": { 
-      border: "none",
-      outline: "none",
-    }
-  }
-})
-
 type TableContextProps = {
   editCell: (row: number, column: string, newValue: string) => void,
 }
@@ -44,6 +26,12 @@ export const SpreadsheetEditor: React.FC<Props> = (props) => {
       }
     }
     return Object.keys(columns)
+  }
+
+  const tableAddRow = () => {
+    const newRows = [...props.rows]
+    newRows.push({})
+    props.updateTableData(newRows)
   }
 
   // TODO: Memoize?
@@ -79,6 +67,7 @@ export const SpreadsheetEditor: React.FC<Props> = (props) => {
           ))}
         </tbody>
       </table>
+      <button onClick={tableAddRow}>Add Row</button>
     </TableContext.Provider>
   )
 }
@@ -91,20 +80,43 @@ type TableCellProps = {
 }
 const TableCell: React.FC<TableCellProps> = (props) => {
   const { editCell } = useContext(TableContext)
-  return (
-    <td>
-      { 
-        !props.editable
-          ? <span>{props.value}</span>
-          : <input 
-            type="text" 
-            value={props.value} 
-            onChange={(event) => {
-              if (event.target.value === props.value) return
-              editCell(props.row, props.column, event.target.value)
-            }} 
-          />
-      }
-    </td>
-  )
+  if (!props.editable) 
+  {
+    return (<td><span>{props.value}</span></td>)
+  } 
+  else 
+  {
+    const value = props.value ?? ""
+    return (
+      <td>
+        <input 
+          type="text" 
+          value={value} 
+          onChange={(event) => {
+            if (event.target.value === props.value) return
+            editCell(props.row, props.column, event.target.value)
+          }} 
+        />
+      </td>
+    )
+  }
 }
+
+const useStyles = createUseStyles({
+  table: {
+    borderSpacing: "0px",
+    borderLeft: "1px solid black",
+    borderTop: "1px solid black",
+    width: "100%",
+    height: "100%",
+    "& td,th": {
+      borderRight: "1px solid black",
+      borderBottom: "1px solid black",
+    },
+    "& input": { 
+      border: "none",
+      outline: "none",
+      background: "none",
+    }
+  }
+})

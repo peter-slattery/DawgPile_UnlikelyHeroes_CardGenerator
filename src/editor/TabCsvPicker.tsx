@@ -1,14 +1,15 @@
 import React from "react"
 import { AppContext } from "./App"
 import { MessageCsvList } from "../shared/messages"
+import { createUseStyles } from "react-jss"
 
-export const CsvPicker: React.FC = () => {
+export const TabCsvPicker: React.FC = () => {
   const appCtx = React.useContext(AppContext)
+  const styles = useStyles()
 
   const [ files, filesSet ] = React.useState<string[]>([])
 
   const fileListSet = (event: MessageEvent<any>) => {
-    console.log("!!")
     const data = JSON.parse(event.data)
     if (data.type === "CSV_LIST") {
       filesSet((data as MessageCsvList).files)
@@ -24,8 +25,21 @@ export const CsvPicker: React.FC = () => {
   }, [])
 
   return (
-    <div>
-      { files.map((file, i) => <div key={i}>{file}</div>) }
+    <div className={styles.outer}>
+      { 
+        files.map((file, i) => (
+          <button key={i} onClick={() => appCtx.focusedCsvSet(file)}>
+            {file}
+          </button>
+        ))
+      }
     </div>
   )
 }
+
+const useStyles = createUseStyles({
+  outer: {
+    display: "flex",
+    flexDirection: "column",
+  }
+})
